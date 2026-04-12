@@ -1,0 +1,16 @@
+Lỗi: zsh: ./run.sh: bad interpreter: /bin/bash^M: no such file or directory
+
+1. Nguyên nhân:
+Lỗi này xảy ra do file script (run.sh) được lưu với định dạng xuống dòng của Windows (CRLF) thay vì định dạng của Linux/Unix (LF). Ký tự ^M chính là ký tự Carriage Return (\r) thừa ra, khiến hệ thống hiểu nhầm đường dẫn trình thông dịch là "/bin/bash\r" thay vì "/bin/bash".
+
+2. Cách khắc phục:
+- Chuyển đổi định dạng xuống dòng từ CRLF sang LF.
+- Bạn có thể dùng lệnh sau trong terminal:
+    sed -i 's/\r$//' run.sh
+- Hoặc sử dụng công cụ dos2unix (nếu có):
+    dos2unix run.sh
+- Đảm bảo file có quyền thực thi:
+    chmod +x run.sh
+
+3. Kết quả:
+Sau khi loại bỏ các ký tự ẩn ^M, file script đã có thể thực thi bình thường trên môi trường Linux/Ubuntu.

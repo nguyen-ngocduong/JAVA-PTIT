@@ -1,7 +1,6 @@
 /*
 STRING001 - TÌm chữ cái ở vị trí index nhất định
  */
-package laptrinhptit;
 import java.util.*;
 public class STRING001 {
     public static void main(String[] args) {

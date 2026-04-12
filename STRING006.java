@@ -1,7 +1,7 @@
 /*
 STRING006 - Chữ cái đầu tiên
  */
-package laptrinhptit;
+
 import java.util.*;
 public class STRING006 {
     public static void main(String[] args) {

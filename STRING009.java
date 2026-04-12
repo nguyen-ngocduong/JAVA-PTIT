@@ -1,7 +1,7 @@
 /*
 STRING009 - String Sposion
  */
-package laptrinhptit;
+
 import java.util.*;
 public class STRING009 {
     public static void main(String[] args) {

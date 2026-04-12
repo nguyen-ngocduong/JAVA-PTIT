@@ -1,7 +1,6 @@
 /*
 OOP016 - Tiền nong
  */
-package laptrinhptit;
 class Money{
     private int euros;
     private int cent;

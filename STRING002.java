@@ -2,7 +2,7 @@
 STRING002 - Kiểm tra xem chuỗi có chứa chuỗi khác hay không
 - sd contains
  */
-package laptrinhptit;
+
 import java.util.*;
 public class STRING002 {
     public static void main(String[] args) {

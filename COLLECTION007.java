@@ -57,7 +57,7 @@ class Trainer{
 public class COLLECTION007 {
     public static void main(String [] args){
         Scanner sc = new Scanner(System.in);
-        Map<String, Trainer> trainers = new LinkedHashMap<>();
+        Map<String, Trainer> trainers = new LinkedHashMap<>(); // phai su dung LinkedHashMap vi de bao toan thu tu vao trainers
         while(true){
             String line = sc.nextLine();
             if(line.equals("Tournament")) break;

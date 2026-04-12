@@ -1,7 +1,7 @@
 /*
 STRING004 - Sử dụng StringBuffer để lấy chiều dài chuỗi
  */
-package laptrinhptit;
+
 import java.util.*;
 public class STRING004{
     public static void main(String [] args){
