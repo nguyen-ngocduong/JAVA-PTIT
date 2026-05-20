@@ -18,7 +18,7 @@ class Test{
     }
     public static void f(String s) throws FileNameFormatException{
         if(s.contains(" ")){
-            System.out.println("File name format");
+            throw new FileNameFormatException("File name format");
         } 
         System.out.println("File opened");
     }
