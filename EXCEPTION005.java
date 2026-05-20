@@ -1,13 +1,22 @@
-//EXCEPTION005 - Rút tiền ngân hàng
 import java.util.*;
-class IllegalArgumentException extends Exception{
-    public IllegalArgumentException(String s){
-        super(s);
+import java.io.*;
+
+class InsufficientFundsException extends Exception{
+    /*So du ko du*/
+    public InsufficientFundsException(String message){
+        super(message);
     }
 }
-class InsufficientFundsException extends Exception{
-    public InsufficientFundsException(String s){
-        super(s);
+class IllegalArgumentException extends Exception{
+    /*So tien rut am*/
+    public IllegalArgumentException(String message){
+        super(message);
+    }
+}
+class InputException extends Exception{
+    //Nhap sai
+    public InputException(String message){
+        super(message);
     }
 }
 class BankAccount{
@@ -15,53 +24,39 @@ class BankAccount{
     public BankAccount(double balance){
         this.balance = balance;
     }
-    public void withdraw(double amount) throws IllegalArgumentException, InsufficientFundsException{
-        if(amount > this.balance){
-            throw new InsufficientFundsException("Lỗi: Số dư không đủ để rút " + amount);
+    public void withdraw(String amount) throws InsufficientFundsException, IllegalArgumentException, InputException{
+        double value = 0;
+        try{
+            value = Double.parseDouble(amount);
+        }catch(NumberFormatException e){
+            System.out.print("Lỗi: ");
+            throw new InputException("Vui lòng nhập số hợp lệ!");
         }
-        else if(amount < 0){
-            throw new IllegalArgumentException("Lỗi: Số tiền rút không được âm!");
+        if(value < 0){
+            System.out.print("Lỗi: ");
+            throw new InsufficientFundsException("Số tiền rút không được âm!");
         }
-        else if(amount > 0 && amount <= this.balance){
-            this.balance -= amount;
+        else if(this.balance < value){
+            System.out.print("Lỗi: ");
+            throw new InsufficientFundsException("Số dư không đủ để rút " + String.format("%.1f", value));
         }
-    }
-    public double getBalance(){
-        return this.balance;
+        else{
+            System.out.println("Rút tiền thành công! Số dư còn lại: " + String.format("%.1f", this.balance - value));
+        }
     }
 }
-public class EXCEPTION005{
+public class Main{
     public static void main(String [] args){
         Scanner sc = new Scanner(System.in);
         int t = Integer.parseInt(sc.nextLine());
         while(t-->0){
             double balance = Double.parseDouble(sc.nextLine());
-            BankAccount account = new BankAccount(balance);
-            String s = sc.nextLine();
-            try{
-                double test1 = Double.parseDouble(s);
-                account.withdraw(test1);
-            }catch(NumberFormatException e){
-                System.out.println("Lỗi: Vui lòng nhập số hợp lệ!");
-            }catch(IllegalArgumentException e){
-                System.out.println(e.getMessage());
-            }catch(InsufficientFundsException e){
-                System.out.println(e.getMessage());
-            }
-            double test2 = sc.nextDouble();
-            double test3 = sc.nextDouble();
-            double test4 = sc.nextDouble();
-            List<Double> list = new ArrayList<>();
-            list.add(test2);
-            list.add(test3);
-            list.add(test4);
-            for(int i = 0; i<3; i++){
+            BankAccount b = new BankAccount(balance);
+            while(sc.hasNextLine()){
+                String amount = sc.nextLine();
                 try{
-                    account.withdraw(list.get(i));
-                    System.out.println("Rút tiền thành công! Số dư còn lại: " + account.getBalance());
-                }catch(IllegalArgumentException e){
-                    System.out.println(e.getMessage());
-                }catch(InsufficientFundsException e){
+                    b.withdraw(amount);
+                }catch(Exception e){
                     System.out.println(e.getMessage());
                 }
             }
