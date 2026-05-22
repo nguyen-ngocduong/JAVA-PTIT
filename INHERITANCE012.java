@@ -5,16 +5,16 @@ import java.util.*;
 class Employee{
     private String name;
     private double salary;
-    //constructor
     public Employee(String name, double salary){
-        this.name = name;
-        this.salary = salary;
+        this.name = name; this.salary = salary;
     }
+    public Employee(String name){
+        this.name = name; 
+    }
+    public String getName() {return this.name;}
+    public double getSalary(){return this.salary;}
     public String getInfo(){
-        return this.name;
-    }
-    public double getSalary(){
-        return salary;
+        return "";
     }
     public double calculateSalary(){
         return this.salary;
@@ -22,63 +22,69 @@ class Employee{
 }
 class FullTimeEmployee extends Employee{
     private double bonus;
-    public FullTimeEmployee(String name, double salary, double bonus) {
+    public FullTimeEmployee(String name, double salary, double bonus){
         super(name, salary);
         this.bonus = bonus;
     }
+    @Override
     public double calculateSalary(){
-        return super.calculateSalary() + this.bonus;
+        return this.bonus + super.getSalary();
     }
-    public String toString(){
-        String ans = String.format("Họ tên: %s\n",super.getInfo())
-            + String.format("Lương cơ bản: %.1f\n",super.getSalary())
-            + String.format("Thưởng: %.1f\n",this.bonus)
-            + String.format("=> Lương thực nhận: %.1f",this.calculateSalary());
-        return ans;
+    @Override
+    public String getInfo(){
+        String res = "";
+        res += "Họ tên: " + super.getName();
+        res += "\nLương cơ bản: "  + String.format("%.1f",super.getSalary());
+        res += "\nThưởng: " + this.bonus;
+        res += "\n=> Lương thực nhận: " + String.format("%.1f",this.calculateSalary());
+        return res;
     }
 }
 class PartTimeEmployee extends Employee{
-    private int hoursWorked;
     private double hourlyRate;
-    public PartTimeEmployee(String name, int hoursWorked, double hourlyRate) {
-        super(name, 0);
-        this.hourlyRate = hourlyRate;
-        this.hoursWorked = hoursWorked;
+    private int hoursWorked;
+    public PartTimeEmployee(String name, double hourlyRate, int hoursWorked){
+        super(name);
+        this.hourlyRate=hourlyRate; this.hoursWorked = hoursWorked;
     }
+    @Override
     public double calculateSalary(){
         return this.hourlyRate * this.hoursWorked;
     }
-    public String toString(){
-        String ans = String.format("Họ tên: %s\n",super.getInfo())
-            + String.format("Số giờ làm việc: %d giờ\n",this.hoursWorked)
-            + String.format("Tiền công mỗi giờ: %.1f\n",this.hourlyRate)
-            + String.format("=> Lương thực nhận: %.1f",this.calculateSalary());
-        return ans;
+    @Override
+    public String getInfo(){
+        String res = "";
+        res += "Họ tên: " + super.getName();
+        res += "\nSố giờ làm việc: "  + this.hoursWorked + " giờ";
+        res += "\nTiền công mỗi giờ: " + this.hourlyRate;
+        res += "\n=> Lương thực nhận: " + String.format("%.1f",this.calculateSalary());
+        return res;
     }
 }
-public class INHERITANCE012 {
-    public static void main(String[] args) {
+public class INHERITANCE012{
+    public static void main(String [] args){
         Scanner sc = new Scanner(System.in);
-        System.out.println("--- Thông tin nhân viên ---");
-        for(int i = 0; i<2; i++){
-            String loaiNhanVien = sc.nextLine();
-            if(loaiNhanVien.equals("FullTime")){
-                String name = sc.nextLine();
+        Map<Employee, String> map = new LinkedHashMap<>();
+        while(sc.hasNextLine()){
+            String status = sc.nextLine(), name = sc.nextLine();
+            if(status.equals("FullTime")){
                 double salary = Double.parseDouble(sc.nextLine());
                 double bonus = Double.parseDouble(sc.nextLine());
-                FullTimeEmployee nhanVien = new FullTimeEmployee(name, salary, bonus);
-                System.out.println("Loại: FullTime");
-                System.out.println(nhanVien);
+                FullTimeEmployee e = new FullTimeEmployee(name, salary, bonus);
+                map.put(e,"FullTime");
             }
-            else if(loaiNhanVien.equals("PartTime")){
-                String name = sc.nextLine();
+            else if(status.equals("PartTime")){
                 int hoursWorked = Integer.parseInt(sc.nextLine());
                 double hourlyRate = Double.parseDouble(sc.nextLine());
-                PartTimeEmployee sinhVien = new PartTimeEmployee(name, hoursWorked, hourlyRate);
-                System.out.println("Loại: PartTime");
-                System.out.println(sinhVien);
+                PartTimeEmployee e = new PartTimeEmployee(name, hourlyRate, hoursWorked);
+                map.put(e,"PartTime");
             }
-            if(i==0) System.out.println();
+        }
+        System.out.println("--- Thông tin nhân viên ---");
+        for(Employee e : map.keySet()){
+            System.out.println("Loại: " + map.get(e));
+            System.out.println(e.getInfo());
+            System.out.println();
         }
     }
 }
