@@ -18,20 +18,20 @@ class Point{
         this.dx += tx;
         this.dy += ty;
     }
-}
-public class OOP014 {
-    public static double magnitude(Point p, int tx, int ty){
-        p.translate(tx, ty);
-        double res = Math.sqrt(Math.pow(p.getDx(),2) + Math.pow(p.getDy(), 2));
+    public double magnitude(int tx, int ty){
+        translate(tx, ty);
+        double res = Math.sqrt(Math.pow(getDx(),2) + Math.pow(getDy(), 2));
         return res;
     }
+}
+public class OOP014 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int t = sc.nextInt();
         while(t-->0){
             Point p = new Point(sc.nextInt(), sc.nextInt());
             int tx=-2, ty=3;
-            System.out.printf("%.3f\n", magnitude(p,tx,ty));
+            System.out.println(String.format("%.3f", p.magnitude(tx, ty)));
         }
     }
 }
