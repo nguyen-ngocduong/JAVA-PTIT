@@ -1,54 +1,84 @@
-/*
-OOP012 - Sách và tác giá
- */
 import java.util.*;
-class Author{
+class Author {
     private String name;
     private String email;
     private char gender;
-    //constructor
-    public Author(String name, String email, char gender){
+    public Author(String name, String email, char gender) {
         this.name = name;
         this.email = email;
         this.gender = gender;
     }
-    public String toString(){
-        return "Author[name="+this.name+", email="+this.email+", gender="+this.gender+"],";
+    public String getName() {return name;}
+    public String getEmail() {return email;}
+    public char getGender() {return gender;}
+    public void setName(String name) {this.name = name;}
+    public void setEmail(String email) {this.email = email;}
+    public void setGender(char gender) {this.gender = gender;}
+    public String toString() {
+        return "Author[name=" + name +", email=" + email + ", gender=" + gender + "]";
     }
 }
-class Book1{
+class Book {
     private String name;
     private Author author;
     private double price;
     private int qty = 0;
-    //constructor
-    public Book1(String name, Author author, double price, int qty){
+    public Book(String name, Author author, double price) {
+        this.name = name;
+        this.author = author;
+        this.price = price;
+    }
+    public Book(String name, Author author, double price, int qty) {
         this.name = name;
         this.author = author;
         this.price = price;
         this.qty = qty;
     }
-    public String toString(){
-        return "Book[name="+this.name+", "+this.author+" price="+this.price+", qty="+this.qty+"]";
+    public String getName() {return name;}
+    public Author getAuthor() {return author;}
+    public double getPrice() {return price;}
+    public int getQty() {return qty;}
+    public void setPrice(double price) {this.price = price;}
+    public void setQty(int qty) {this.qty = qty;}
+    public String toString() {
+        return "Book[name=" + name + ", " + author.toString() + ", price=" + price + ", qty=" + qty + "]";
     }
 }
-public class OOP012 {
+
+public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int t = sc.nextInt();
-        sc.nextLine();
-        while(t-->0){
-            String o1 = sc.nextLine();String nameBook = sc.nextLine();
-            double price = Double.parseDouble(sc.nextLine());
-            int qty = Integer.parseInt(sc.nextLine());
-            String o2 = sc.nextLine();
-            String nameAuthor = sc.nextLine();
-            String email = sc.nextLine();
-            char gender = sc.nextLine().charAt(0);
-            String end = sc.nextLine();
-            Author author = new Author(nameAuthor, email, gender);
-            Book1 book = new Book1(nameBook, author, price, qty);
-            System.out.println(book);
+        int t = Integer.parseInt(sc.nextLine());
+        while (t-- > 0) {
+            List<String> list = new ArrayList<>();
+            while (true) {
+                String line = sc.nextLine();
+                if (line.equals("End"))break;
+                list.add(line);
+            }
+            String type = list.get(0);
+            if (type.equals("Author")) {
+                String name = list.get(1);
+                String email = list.get(2);
+                char gender = list.get(3).charAt(0);
+                String bookName = list.get(5);
+                double price = Double.parseDouble(list.get(6));
+                int qty = Integer.parseInt(list.get(7));
+                Author a = new Author(name, email, gender);
+                Book book = new Book(bookName, a, price, qty);
+                System.out.println(a);
+            }
+            else if (type.equals("Book")) {
+                String bookName = list.get(1);
+                double price = Double.parseDouble(list.get(2));
+                int qty = Integer.parseInt(list.get(3));
+                String authorName = list.get(5);
+                String email = list.get(6);
+                char gender = list.get(7).charAt(0);
+                Author author = new Author(authorName, email, gender);
+                Book book = new Book(bookName, author, price, qty);
+                System.out.println(book);
+            }
         }
     }
 }
