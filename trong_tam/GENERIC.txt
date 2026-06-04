@@ -1,0 +1,375 @@
+/*
+GENERIC001 - Hoán đổi cặp
+*/
+import java.util.*;
+class Pair<T>{
+    private T first;
+    private T second;
+    public Pair(T first, T second){
+        this.first = first; this.second = second;
+    }
+    public T getFirst(){return this.first;}
+    public T getSecond(){return this.second;}
+    public void setFirst(T fisrt){this.first = first;}
+    public void setSecond(T second){this.second = second;}
+    public void swap(){
+        T tmp = first; 
+        first = second;
+        second = tmp;
+    }
+}
+public class Main{
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        int t = Integer.parseInt(sc.nextLine());
+        while(t-->0){
+            String [] line = sc.nextLine().split("\\s+");
+            if(line[0].charAt(0) <= 57 && line[0].charAt(0) >= 48 && line[1].charAt(0) <= 57 && line[1].charAt(0) >= 48){
+                Pair<String> p = new Pair(line[0], line[1]);
+                p.swap();
+                System.out.println(p.getFirst() + " " + p.getSecond());
+            }
+            else{
+                Pair<String> p = new Pair(line[0], line[1]);
+                p.swap();
+                System.out.println("'" + p.getFirst() + "' '" + p.getSecond() + "'");
+            }
+        }
+    }
+}
+/*
+GENERIC002 - Tìm chỉ số phần tử
+*/
+import java.util.*;
+public class Main{
+    public static int findFirstMatch(String [] array, String target, Map<String, Integer> map, int counter){
+        for(int i = 0; i<array.length; i++){
+            if(!map.containsKey(array[i])){
+                map.put(array[i], counter);
+            }
+            counter++;
+        }
+        int res = -1;
+        for(String s : map.keySet()){
+            if(target.equals(s)){
+                res = map.get(s);
+            }
+        }
+        return res;
+    }
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        int t = Integer.parseInt(sc.nextLine());
+        while(t-->0){
+            String [] line = sc.nextLine().split(" \\| ");
+            String [] line1 = line[0].split("\\s+");
+            String line2 = line[1];
+            int counter = 0;
+            Map<String, Integer> map = new LinkedHashMap<>();
+            System.out.println(findFirstMatch(line1, line2, map, counter));
+        }
+    }
+}
+/*
+GENERIC004 - Hàng đợi ưu tiên
+*/
+import java.util.*;
+//EmptyQueueException
+class EmptyQueueException extends Exception{
+    public EmptyQueueException(String message){
+        super(message);
+    }
+}
+class GenericPriorityQueue<T extends Comparable <T>>{
+    private PriorityQueue<T> queue;
+    public GenericPriorityQueue(){
+        this.queue = new PriorityQueue<>();
+    }
+    public void add(T item){
+        queue.add(item);
+    }
+    public T poll() throws EmptyQueueException{
+        if(queue.isEmpty()) throw new EmptyQueueException("Empty Queue");
+        return queue.poll();
+    }
+    public boolean isEmpty(){
+        return queue.isEmpty();
+    }
+}
+class Task implements Comparable<Task>{
+    private String name;
+    private int priority;
+    //giu thu tu ghi vao
+    private static int counter = 0;
+    private int order;
+    public Task(String name,int priority){
+        this.name = name;this.priority = priority;
+        this.order = counter++;
+    }
+    @Override
+    public int compareTo(Task other){
+        if(this.priority != other.priority){
+            return this.priority - other.priority; // Priority tang dan
+        }
+        //neu bang nhau => theo thu tu tu dien
+        return this.order - other.order;
+    }
+    @Override
+    public String toString(){
+        return "Task [" + name + "] " + priority;
+    }
+}
+class Student implements Comparable<Student>{
+    private String name;
+    private double gpa;
+    private static int counter = 0;
+    private int order;
+    public Student(String name, double gpa){
+        this.name = name;this.gpa = gpa;
+        this.order = counter++;
+    }
+    @Override 
+    public int compareTo(Student other){
+        if(this.gpa != other.gpa){
+            return Double.compare(other.gpa, this.gpa); // gpa giam dan
+        }
+        return this.order - other.order;
+    }
+    @Override
+    public String toString(){
+        return "Student [" + name + "] " + gpa;
+    }
+}
+public class Main{
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        GenericPriorityQueue<Task> priorityTask = new GenericPriorityQueue<>();
+        GenericPriorityQueue<Student> priorityStudent = new GenericPriorityQueue<>();
+        while(sc.hasNextLine()){
+            String line = sc.nextLine();
+            if(line.equals("exit")) break;
+            int firstSpace = line.indexOf(" ");
+            int leftBracket = line.indexOf("[");
+            int rightBracket = line.indexOf(".]");
+            String part1 = line.substring(0, firstSpace);
+            String part2 = line.substring(leftBracket + 1, rightBracket);
+            String part3 = line.substring(rightBracket + 3);
+            if(line.startsWith("Task")){
+                Task t = new Task(part2, Integer.parseInt(part3));
+                priorityTask.add(t);
+            }
+            else if(line.startsWith("Student")){
+                Student s = new Student(part2, Double.parseDouble(part3));
+                priorityStudent.add(s);
+            }
+        }
+        System.out.println("[Task Queue]");
+        if(priorityTask.isEmpty()){
+            System.out.println("Không có nhiệm vụ trong hàng đợi.");
+        } else{
+            try{
+                while(!priorityTask.isEmpty()){
+                    System.out.println(priorityTask.poll());
+                }
+            }catch(EmptyQueueException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        System.out.println();
+        System.out.println("[Student Queue]");
+        if(priorityStudent.isEmpty()){
+            System.out.println("Không có sinh viên trong hàng đợi.");
+        }else{
+            try{
+                while(!priorityStudent.isEmpty()){
+                    System.out.println(priorityStudent.poll());
+                }
+            }catch(EmptyQueueException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+/*
+GENERIC005 - Công việc và lịch sử
+ */
+import java.util.*;
+class EmptyStackException extends Exception{
+    public EmptyStackException(String message){
+        super(message);
+    }
+}
+class Stack<T extends Comparable<T>> {
+    private ArrayList<T> stack;
+    public Stack(){
+        this.stack = new ArrayList<>();
+    }
+    public void push(T item){
+        this.stack.add(item);
+    }
+    public T peek() throws EmptyStackException{
+        if(this.stack.isEmpty()) throw new EmptyStackException("Empty Stack");
+        return this.stack.get(stack.size()-1);
+    }
+    public T pop() throws EmptyStackException{
+        if(this.stack.isEmpty()) throw new EmptyStackException("Empty Stack");
+        return this.stack.remove(stack.size()-1);
+    }
+    public boolean isEmpty(){
+        return this.stack.isEmpty();
+    }
+    public ArrayList<T> getAll(){
+        return this.stack;
+    }
+}
+class Task implements Comparable<Task>{
+    private String name;
+    private int Priority;
+    // lay thu tu uu tien
+    private static int counter = 0;
+    private int order;
+    public Task(String name, int Priority){
+        this.name = name; this.Priority = Priority;
+        this.order = counter ++;
+    }
+    @Override
+    public int compareTo(Task other){
+        // sap xep theo thu tu uu tien
+        if(this.Priority != other.Priority){
+            return this.Priority - other.Priority;
+        }
+        // sắp xếp theo thứ tự LIFO
+        return other.order - this.order;
+    }
+    @Override
+    public String toString(){
+        return "Task [" + this.name + "] " + this.Priority;
+    }
+}
+class History implements Comparable<History>{
+    private String action;
+    private static int counter = 0;
+    private int order;
+    public History(String action){
+        this.action = action;
+        this.order = counter++;
+    }
+    @Override
+    public int compareTo(History other){
+        //so sanhtheo thu tu Z-A
+        return other.action.compareTo(this.action);
+    }
+    @Override
+    public String toString(){
+        return "History [" + this.action + ".]";
+    }
+}
+public class Main{
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        Stack<Task> taskStack = new Stack<>();
+        Stack<History> historyStack = new Stack<>();
+        while(sc.hasNextLine()){
+            String line = sc.nextLine();
+            if(line.equals("exit")) break;
+            int firstSpace = line.indexOf(" ");
+            int leftBracket = line.indexOf("[");
+            int rightDot = line.lastIndexOf(".]");
+            String status = line.substring(0, firstSpace);
+            String name = line.substring(leftBracket+1, rightDot);
+            if(status.equals("Task")){
+                int Priority = Integer.parseInt(line.substring(rightDot+3));
+                Task t = new Task(name, Priority);
+                taskStack.push(t);
+            }
+            else if(status.equals("History")){
+                History h = new History(name);
+                historyStack.push(h);
+            }
+        }
+        System.out.println("[Task Stack]");
+        if(taskStack.isEmpty()){
+            System.out.println("Không có công việc trong ngăn xếp.");
+        } else{
+            ArrayList<Task> tasks = taskStack.getAll();
+            Collections.sort(tasks);
+            for(Task t : tasks){
+                System.out.println(t);
+            }
+        }
+        System.out.println();
+        System.out.println("[History Stack]");
+        if(historyStack.isEmpty()){
+            System.out.println("Không có lịch sử trong ngăn xếp.");
+        }else{
+            ArrayList<History> tasks = historyStack.getAll();
+            Collections.sort(tasks);
+            for(History t : tasks){
+                System.out.println(t);
+            }
+        }
+    }
+}
+/*
+DATA_STRUCTURE001 - Hàng đợi ưu tiên
+*/
+import java.util.*;
+class Student {
+    private String name;
+    private double cgpa;
+    private int id;
+    public Student(String name, double cgpa, int id){
+        this.name = name; this.cgpa = cgpa; this.id = id;
+    }
+    public String getName(){return this.name;}
+    public double getCGPA(){return this.cgpa;}
+    public int getId(){return this.id;}
+}
+class Priorities{
+    private PriorityQueue<Student> queue;
+    public List<Student> getStudents(List<String> events){
+        queue = new PriorityQueue<Student>(new Comparator<Student>(){
+            @Override
+            public int compare(Student s1, Student s2){
+                if(Double.compare(s1.getCGPA(),s2.getCGPA()) != 0){
+                    return Double.compare(s2.getCGPA(), s1.getCGPA());
+                }
+                else if(s1.getName().equals(s2.getName())){
+                    return s1.getName().compareTo(s2.getName());
+                }
+                return s1.getId() - s2.getId();
+            }
+        });
+        for(String event : events){
+            String [] parts = event.split("\\s+");
+            if(parts.length == 1){
+                if(!queue.isEmpty()) queue.poll();
+            }
+            else queue.add(new Student(parts[1], Double.parseDouble(parts[2]), Integer.parseInt(parts[3])));
+        }
+        List<Student> listStudent = new ArrayList<>();
+        while(!queue.isEmpty()){
+            listStudent.add(queue.poll());
+        }
+        return listStudent;
+    }
+}
+public class Main{
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        int t = Integer.parseInt(sc.nextLine());
+        List <String> events = new ArrayList<>();
+        while(t-->0){
+            String event = sc.nextLine();
+            events.add(event);
+        }
+        Priorities p = new Priorities();
+        List<Student> list = p.getStudents(events);
+        if(list.isEmpty()){
+            System.out.println("EMPTY");
+        }
+        for(Student s : list){
+            System.out.println(s.getName());
+        }
+    }
+}
