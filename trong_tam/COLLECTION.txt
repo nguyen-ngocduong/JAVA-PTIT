@@ -41,123 +41,109 @@ public class Main {
 COLLECTION002 - Nhà kho nâng cao
  */
 import java.util.*;
-class Product_2 {
-    private String name; private int price; private int stock;
-    //constructor
-    public Product_2(String name, int price, int stock){
-        this.name = name; this.price = price; this.stock = stock;
+class Warehouse{
+    private HashMap<String, Integer> mapStock;
+    private HashMap<String, Integer> mapPrice;
+    public Warehouse(){
+        this.mapStock = new LinkedHashMap<>();
+        this.mapPrice = new LinkedHashMap<>();
     }
-    public String getName(){return this.name;}
-    public int getStock() {return this.stock;}
-    public void setStock(int stock){this.stock = stock;}
-    public int getPrice() {return this.price;}
-}
-class Warehouse_2{
-    ArrayList<Product_2> listProduct = new ArrayList<>();
-    public void addProduct(Product_2 product){
-        listProduct.add(product);
+    public void addProduct(String product, int price, int stock){
+        mapStock.put(product, stock);
+        mapPrice.put(product, price);
     }
-    public ArrayList<Product_2> getProduct(){
-        return listProduct;
-    }
-    //lấy giá sản phẩm
-    public int Price(String sanPham){
-        for(Product_2 p : listProduct){
-            if(p.getName().equals(sanPham)){
-                return p.getPrice();
+    public int price(String product){
+        int res = -99;
+        for(String p : mapPrice.keySet()){
+            if(p.equals(product)){
+                res = mapPrice.get(product);
+                break;
             }
         }
-        return -99;
+        return res;
     }
-    //lấy số lượng tồn kho
-    public int Stock(String sanPham){
-        for(Product_2 p : listProduct){
-            if(p.getName().equals(sanPham)){
-                return p.getStock();
+    public int stock(String product){
+        int res = 0;
+        for(String p : mapStock.keySet()){
+            if(p.equals(product)){
+                res = mapStock.get(product);
+                break;
             }
         }
-        return 0;
+        return res;
     }
-    public boolean take(String sanPham){
-        for(Product_2 p : listProduct){
-            if(p.getName().equals(sanPham) && p.getStock() >= 1){
-                p.setStock(p.getStock() - 1);
-                return true;
-            }
+    public boolean take(String product){
+        if(!mapStock.containsKey(product) || mapStock.get(product) <= 0){
+            return false;
         }
-        return false;
+        mapStock.put(product, mapStock.get(product)-1);
+        return true;
+    }
+    public HashMap<String, Integer> getMapStock(){
+        return this.mapStock;
     }
 }
-public class Main {
-    public static void main(String[] args) {
-        Product_2 p1 = new Product_2("coffee", 5,1);
-        Warehouse_2 w = new Warehouse_2();
-        w.addProduct(p1);
+public class Main{
+    public static void main(String [] args){
+        Warehouse w = new Warehouse();
+        w.addProduct("coffee", 5, 1);
         System.out.println("stock:");
-        System.out.println("coffee:  "+w.Stock("coffee"));
-        System.out.println("sugar: "+w.Stock("sugar"));
-        System.out.println("taking coffee" + " " + w.take("coffee"));
-        System.out.println("taking coffee" + " " + w.take("coffee"));
-        System.out.println("taking sugar" + " " + w.take("sugar"));
+        System.out.println("coffee:  " + w.stock("coffee"));
+        System.out.println("sugar: " + w.stock("sugar"));
+        System.out.println("taking coffee " + w.take("coffee"));
+        System.out.println("taking coffee " + w.take("coffee"));
+        System.out.println("taking sugar " + w.take("sugar"));
         System.out.println("stock:");
-        System.out.println("coffee:  "+w.Stock("coffee"));
-        System.out.println("sugar: "+w.Stock("sugar"));
+        System.out.println("coffee:  " + w.stock("coffee"));
+        System.out.println("sugar: " + w.stock("sugar"));
     }
 }
 /*
 COLLECTION003 - Quản lí kho nâng cao (2)
  */
 import java.util.*;
-class WareHouse{
-    Map<String, Integer> getStock = new LinkedHashMap<>();
-    Map<String, Integer> getPrice = new LinkedHashMap<>();
-    public void addProduct(String name, int price, int stock){
-        getStock.put(name, stock);
-        getPrice.put(name, price);
+class Warehouse{
+    private HashMap<String, Integer> mapStock;
+    private HashMap<String, Integer> mapPrice;
+    public Warehouse(){
+        this.mapStock = new LinkedHashMap<>();
+        this.mapPrice = new LinkedHashMap<>();
+    }
+    public void addProduct(String product, int price, int stock){
+        this.mapStock.put(product, stock);
+        this.mapPrice.put(product, price);
     }
     public int price(String product){
-        if(getPrice.containsKey(product)){
-            return getPrice.get(product);
-        }
-        return -99;
+        if(!mapPrice.containsKey(product)) return -99;
+        return mapPrice.get(product);
     }
     public int stock(String product){
-        if(getPrice.containsKey(product)){
-            return getStock.get(product);
-        }
-        return 0;
+        if(!mapStock.containsKey(product)) return 0;
+        return mapStock.get(product);
     }
     public boolean take(String product){
-        if(!getStock.containsKey(product)){
+        if(!mapStock.containsKey(product) || mapStock.get(product) <= 0){
             return false;
         }
-        int currentStock = getStock.get(product);
-        currentStock--;
-        // nho hon 0 => gan bang 0
-        if(currentStock < 0){
-            currentStock = 0;
-        }
-        //the cho sp
-        getStock.put(product, currentStock);
+        mapStock.put(product, mapStock.get(product)-1);
         return true;
     }
-    // ten sp dang chua trong kho
     public Set<String> products(){
-        Set<String> res = new HashSet<>();
-        for(String p : getStock.keySet()){
-            if(getStock.get(p) > 0) res.add(p);
+        Set<String> set = new HashSet<>();
+        for(String name : mapStock.keySet()){
+            if(mapStock.get(name) > 0) set.add(name);
         }
-        return res;
+        return set;
     }
 }
 public class Main{
     public static void main(String [] args){
-        WareHouse w = new WareHouse();
-        w.addProduct("milk", 3, 10); w.addProduct("coffee", 5, 6);
-        w.addProduct("buttermilk", 2, 2); w.addProduct("yogurt", 2, 20);
+        Warehouse w = new Warehouse();
+        w.addProduct("milk", 3, 2); w.addProduct("coffee", 5,6);
+        w.addProduct("buttermilk", 2, 2); w.addProduct("yogurt", 2, 10);
         w.take("buttermilk"); w.take("milk"); w.take("buttermilk");
-        for (String p : w.products()) {
-            System.out.println(p);
+        for(String name : w.products()){
+            System.out.println(name);
         }
     }
 }
