@@ -153,69 +153,68 @@ COLLECTION004 - Quản lí nhà kho (3)
 import java.util.*;
 class Item{
     private String product;
-    private int quantity;
-    private int unitPrice;
-    private int originalQuantity;
-    public Item(String product, int quantity, int unitPrice){
-        this.product = product; this.quantity = quantity; this.unitPrice = unitPrice;
+    private int quantity, price, originalQuantity;
+    public Item(String product, int quantity, int price){
+        this.product = product; this.quantity = quantity; this.price = price;
     }
     public Item(String product, int quantity){
-        this.product = product; this.quantity = quantity;
+        this(product, quantity, 0);
     }
     public String getProduct(){return this.product;}
     public int getQuantity(){return this.quantity;}
-    public int getOriginalPrice(){return this.unitPrice;}
+    public int getPrice(){return this.price;}
     public void setQuantity(int quantity){this.quantity = quantity;}
-    public int getTotalPrice(){return this.quantity * this.unitPrice;}
+    public int getTotalPrice(){
+        return this.quantity * this.price;
+    }
     public String toString(){
         return "Product: " + this.product + " has quantity " + this.quantity + " with price: " + getTotalPrice();
     }
 }
-class WareHouse{
-    HashMap<String, Item> items = new LinkedHashMap<>();
+class Warehouse{
+    private HashMap<String, Item> map;
+    public Warehouse(){
+        this.map = new LinkedHashMap<>();
+    }
     public void importProduct(Item i){
-        items.put(i.getProduct(), i);
+        map.put(i.getProduct(), i);
     }
-    public Item getItem(String tenSanPham){
-        return items.getOrDefault(tenSanPham, new Item(tenSanPham, 0, 0));
+    public Item getItem(String nameItem){
+        if(map.containsKey(nameItem)) return map.get(nameItem);
+        return new Item(nameItem, 0);
     }
-    public void removeProduct(String tenSanPham, int soLuong){
-        Item i = items.get(tenSanPham);
-        if(i != null){
-            if(i.getQuantity() >= soLuong){
-                i.setQuantity(i.getQuantity() - soLuong);
-            }
-            else{
-                i.setQuantity(0);
-            }
+    public void removeProduct(String product, int stock){
+        if(map.containsKey(product) && map.get(product).getQuantity() > stock){
+            Item item = map.get(product);
+            item.setQuantity(item.getQuantity() - stock);
+            map.put(product, item);
         }
     }
     public void decreaseQuantityInWarehouseByOne(){
-        for(Item i : items.values()){
+        for(Item i : map.values()){
             i.setQuantity(i.getQuantity() - 1);
         }
     }
-    public void takeFromItemToWarehouse(List<Item> itemsToCheck, String tenSanPham, int soLuong)
-    {
+    public void takeFromItemToWarehouse(List<Item> itemsToCheck, String product, int soLuong){
         for(Item i : itemsToCheck){
             int soLuongDuocThem = 0;
-            if(i.getProduct().equals(tenSanPham)){
+            if(i.getProduct().equals(product)){
                if(soLuong > i.getQuantity()){
                    soLuongDuocThem = i.getQuantity();
                }
                else soLuongDuocThem = soLuong;
-               Item j = items.get(tenSanPham);
+               Item j = map.get(product);
                j.setQuantity(j.getQuantity() + soLuongDuocThem);
                break;
             }
         }
     }
 }
-public class Main {
-    public static void main(String[] args) {
+public class Main{
+    public static void main(String [] args){
         Item i1 = new Item("milk", 4, 2);
         Item i2 = new Item("buttermilk",10,2);
-        WareHouse w = new WareHouse();
+        Warehouse w = new Warehouse();
         w.importProduct(i1); w.importProduct(i2);
         System.out.println(w.getItem("milk"));
         System.out.println(w.getItem("buttermilk"));
